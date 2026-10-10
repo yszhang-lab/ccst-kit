@@ -50,6 +50,9 @@ input[type=search]:focus{outline:2px solid var(--accent);outline-offset:1px;bord
 .chip{display:inline-flex;align-items:baseline;gap:6px;border-radius:8px;padding:7px 12px;
   background:var(--accent-soft);color:var(--accent);font-size:14px;font-weight:600}
 .chip span{font-variant-numeric:tabular-nums}
+.chip.pay{background:var(--warn-bg);color:var(--warn)}
+.chip em{font-style:normal;font-size:12px;font-weight:600;opacity:.9;margin-left:3px}
+.legend{display:block;margin-top:-6px;color:var(--muted);font-size:12.5px}
 .none{color:var(--muted);font-size:14px}
 dl{display:grid;grid-template-columns:auto 1fr;gap:8px 18px;margin:0;font-size:14px}
 dt{color:var(--muted)}
@@ -129,11 +132,23 @@ function owed(p){
 
 function render(p){
   const items = [];
-  if(p.home) items.push(['主场球衣（蓝白）', p.home]);
-  if(p.away) items.push(['客场球衣（黑蓝）', p.away]);
-  if(p.gkh)  items.push(['门将主场', p.gkh]);
-  if(p.gka)  items.push(['门将客场', p.gka]);
-  if(p.train)items.push(['训练服', p.train]);
+  { const r = p.reimb;
+    const full = (typeof p.owe === 'number' && p.owe === 0);
+    let budget = (full || r === '球队报销杯赛队员' || r === '球队报销-赞助商') ? 99
+               : (r === '球队报销一套球衣-冬季联赛' ? 1 : 0);
+    const add = (k, n, jersey) => {
+      if(!n) return;
+      let cov = 0;
+      if(jersey && budget > 0){ cov = Math.min(n, budget); budget -= cov; }
+      else if(!jersey && full){ cov = n; }
+      items.push([k, n, cov >= n]);
+    };
+    add('主场球衣（蓝白）', p.home, true);
+    add('客场球衣（黑蓝）', p.away, true);
+    add('门将主场', p.gkh, true);
+    add('门将客场', p.gka, true);
+    add('训练服', p.train, false);
+  }
 
   const rows = [];
   if(p.jersey_total) rows.push(['球衣尺码', p.jsize_txt || '— 未填 —']);
@@ -167,8 +182,9 @@ function render(p){
     <h2>${esc(p.name)}</h2>
     <p class="meta">共 ${p.total} 件${p.seqs.length ? ' · 问卷提交序号 ' + p.seqs.join('、') : ''} · 需支付金额：<strong class="owe">¥${owed(p)}</strong>${p.owe_note ? '（' + esc(p.owe_note) + '）' : (owed(p) ? '' : '（由球队报销）')}</p>
     <div class="items">${
-      items.length ? items.map(([k,v]) => `<span class="chip">${esc(k)}<span>×${v}</span></span>`).join('')
-                   : '<span class="none">这份提交没有勾选任何球衣或训练服。</span>'}</div>
+      items.length ? items.map(([k,v,ok]) => `<span class="chip${ok ? '' : ' pay'}">${esc(k)}<span>×${v}</span>${ok ? '' : '<em>自费</em>'}</span>`).join('')
+                   : '<span class="none">这份提交没有勾选任何球衣或训练服。</span>'}</div>${
+      items.some(i => !i[2]) ? '<span class="legend">橙色标「自费」的是需要你付款的件，蓝色由球队报销。</span>' : ''}
     <dl>${rows.map(([k,v,cls,note]) =>
       `<dt>${esc(k)}</dt><dd${cls ? ` class="${cls}"` : ''}>${esc(v)}${
         note ? `<span class="note">${esc(note)}</span>` : ''}</dd>`).join('')}</dl>
