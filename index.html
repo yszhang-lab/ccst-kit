@@ -152,7 +152,7 @@ function render(p){
       ((p.away + p.gkh + p.gka) > 0 ? '，客场自费（请联系确认）' : '，其余自费'), 'money']);
   rows.push(['领取方式', p.pick_txt || '—']);
   if(p.addr && !PUBLIC) rows.push(['快递地址', p.addr]);
-  if(p.wechat) rows.push(['微信号（脱敏）', p.wechat]);
+  if(p.wechat) rows.push(['微信号', p.wechat]);
 
   result.innerHTML = `<div class="card">
     <h2>${esc(p.name)}</h2>
