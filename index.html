@@ -29,7 +29,7 @@ body{background:var(--bg);color:var(--fg);font-family:var(--font-b);line-height:
 .wrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
 header{display:flex;flex-direction:column;gap:6px}
 .kicker{font-family:var(--font-d);letter-spacing:.14em;text-transform:uppercase;
-  font-size:12px;color:var(--accent);font-weight:600}
+  font-size:15px;color:var(--accent);font-weight:600}
 h1{font-family:var(--font-d);font-weight:600;font-size:clamp(26px,6vw,38px);margin:0;
   letter-spacing:.01em;text-wrap:balance}
 .sub{color:var(--muted);font-size:14px;margin:0}
@@ -138,8 +138,8 @@ function render(p){
   }
   if(p.jersey_total){
     const winter = p.reimb === '球队报销一套球衣-冬季联赛';
-    rows.push(['比赛号（已分配）', (p.race || '待分配') + (winter ? '（冬季联赛）' : ''), 'hot']);
-    if(p.memo) rows.push(['纪念号（已分配）', p.memo]);
+    const num = p.race || p.memo;
+    rows.push(['已分配号码', num ? num + (winter ? '（冬季联赛）' : (p.reimb === '自费' ? '（纪念号）' : '')) : '待分配', 'hot']);
     rows.push(['你填的首选号码', p.n1 || '—']);
     if(p.n2) rows.push(['你填的备选号码', p.n2]);
     if(p.n3) rows.push(['你想要的纪念号', p.n3]);
