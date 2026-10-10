@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light}html,body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>CCST26-27 球衣征订查询</title>
+<style>
+/* Layout: single centered column — search bar up top, result card below, team totals at the foot. */
+:root{
+  --bg:#f3f1ec; --surface:#ffffff; --fg:#17202b; --muted:#6a7280;
+  --line:#dcd8d0; --accent:#1b3f8f; --accent-soft:#e6ecf8;
+  --warn:#8a5a00; --warn-bg:#fdf3dc; --ok:#1f6b45; --hot:#c0352b; --money:#1f6b45;
+  --font-d:"Oswald","Arial Narrow",Impact,sans-serif;
+  --font-b:"Noto Sans SC","PingFang SC","Microsoft YaHei",Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12161c; --surface:#1a2029; --fg:#e8eaee; --muted:#98a1ae;
+  --line:#2c3440; --accent:#7fa6ee; --accent-soft:#1d2a44;
+  --warn:#e8bf6a; --warn-bg:#2e2718; --ok:#6cc79a; --hot:#ff8d80; --money:#6cc79a; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#12161c; --surface:#1a2029; --fg:#e8eaee; --muted:#98a1ae;
+  --line:#2c3440; --accent:#7fa6ee; --accent-soft:#1d2a44;
+  --warn:#e8bf6a; --warn-bg:#2e2718; --ok:#6cc79a; --hot:#ff8d80; --money:#6cc79a; color-scheme:dark;}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-b);line-height:1.6;
+  padding-inline:16px;padding-block:28px 48px}
+.wrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+header{display:flex;flex-direction:column;gap:6px}
+.kicker{font-family:var(--font-d);letter-spacing:.14em;text-transform:uppercase;
+  font-size:12px;color:var(--accent);font-weight:600}
+h1{font-family:var(--font-d);font-weight:600;font-size:clamp(26px,6vw,38px);margin:0;
+  letter-spacing:.01em;text-wrap:balance}
+.sub{color:var(--muted);font-size:14px;margin:0}
+.searchbox{position:relative}
+input[type=search]{width:100%;padding:14px 16px;font-size:16px;font-family:inherit;
+  border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--fg)}
+input[type=search]:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+.hits{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.hits button{font:inherit;font-size:14px;padding:6px 12px;border-radius:999px;cursor:pointer;
+  border:1px solid var(--line);background:var(--surface);color:var(--fg)}
+.hits button:hover{border-color:var(--accent);color:var(--accent)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  padding:20px;display:flex;flex-direction:column;gap:16px}
+.card h2{font-family:var(--font-d);font-size:24px;margin:0;font-weight:600}
+.meta{color:var(--muted);font-size:13px;margin:-10px 0 0}
+.items{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:baseline;gap:6px;border-radius:8px;padding:7px 12px;
+  background:var(--accent-soft);color:var(--accent);font-size:14px;font-weight:600}
+.chip span{font-variant-numeric:tabular-nums}
+.none{color:var(--muted);font-size:14px}
+dl{display:grid;grid-template-columns:auto 1fr;gap:8px 18px;margin:0;font-size:14px}
+dt{color:var(--muted)}
+dd{margin:0;min-width:0;overflow-wrap:anywhere}
+dd.hot{color:var(--hot);font-weight:600}
+dd.money{color:var(--money);font-weight:600}
+.note{display:block;margin-top:2px;color:var(--warn);font-size:12.5px;font-weight:400;line-height:1.45}
+.flag{background:var(--warn-bg);color:var(--warn);border-radius:10px;padding:12px 14px;font-size:14px}
+.flag strong{display:block;margin-bottom:4px}
+.flag ul{margin:0;padding-left:18px}
+.totals{border-top:1px solid var(--line);padding-top:18px}
+.totals h3{font-family:var(--font-d);font-size:16px;letter-spacing:.08em;text-transform:uppercase;
+  margin:0 0 12px;font-weight:600;color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600}
+td.n,th.n{text-align:right}
+.tablewrap{overflow-x:auto}
+footer{color:var(--muted);font-size:12.5px;border-top:1px solid var(--line);padding-top:14px}
+footer p{margin:0 0 6px}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Noto+Sans+SC:wght@400;600&display=swap">
+
+<div class="wrap">
+  <header>
+    <div class="kicker">哥大华人足球队 · CCST 26-27</div>
+    <h1>球衣及训练服征订查询</h1>
+    <p class="sub">输姓名或微信号（如果填了的话），仔细核对自己的订购件数、尺码、号码、印号和报销方式。有出入请在群里联系队委。</p>
+  </header>
+
+  <div class="searchbox">
+    <input type="search" id="q" placeholder="输入姓名，例如：李牧原 / Marco" autocomplete="off">
+    <ul class="hits" id="hits"></ul>
+  </div>
+
+  <div id="result"></div>
+
+  <div class="totals">
+    <h3>全队汇总</h3>
+    <div class="tablewrap"><table id="totals"></table></div>
+  </div>
+
+  <footer>
+    <p>数据来源：问卷星征订表导出（67 份提交，已按姓名合并为 <span id="np"></span> 人）。</p>
+    <p>尺码、费用、领取方式等选项已按问卷原始选项还原。</p>
+    <p>训练服自费约 ¥140/件，不印号码，胸前可印名字首字母。</p>
+  </footer>
+</div>
+
+<script>
+const PUBLIC = true;
+const DATA = [{"name":"孙粤行","wechat":"","home":1,"away":1,"gkh":0,"gka":0,"train":1,"jsize_txt":"XL","tsize_txt":"XL","letters":"Player","n1":"","n2":"","n3":"17","race":"","memo":"17","back":"Sunny","pick_txt":"学校自取或杯赛时领取","comp_txt":"不参加，只参加野球和训练","fee_txt":"","reimb":"自费","addr":"","seqs":["4"],"issues":[],"test":false,"jersey_total":2,"total":3},{"name":"Andrew Hsu","wechat":"","home":1,"away":0,"gkh":0,"gka":0,"train":1,"jsize_txt":"L","tsize_txt":"L","letters":"AH","n1":"6","n2":"16","n3":"","race":"6","memo":"","back":"Hsu","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销杯赛队员","addr":"","seqs":["5"],"issues":[],"test":false,"jersey_total":1,"total":2},{"name":"Cody Feng","wechat":"","home":0,"away":0,"gkh":0,"gka":0,"train":1,"jsize_txt":"","tsize_txt":"XL","letters":"Cody Feng","n1":"7","n2":"(空)","n3":"","race":"7","memo":"","back":"","pick_txt":"学校自取或杯赛时领取","comp_txt":"","fee_txt":"","reimb":"训练服（自费）","addr":"","seqs":["6"],"issues":[],"test":false,"jersey_total":0,"total":1},{"name":"李牧原","wechat":"","home":1,"away":1,"gkh":0,"gka":0,"train":1,"jsize_txt":"L","tsize_txt":"M","letters":"ML","n1":"17","n2":"36","n3":"","race":"36","memo":"","back":"KOPB","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销杯赛队员","addr":"","seqs":["7"],"issues":[],"test":false,"jersey_total":2,"total":3},{"name":"Fangqi","wechat":"","home":1,"away":1,"gkh":0,"gka":0,"train":1,"jsize_txt":"L","tsize_txt":"M","letters":"FJ","n1":"77","n2":"28","n3":"","race":"77","memo":"","back":"Jiang","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销杯赛队员","addr":"","seqs":["8"],"issues":[],"test":false,"jersey_total":2,"total":3},{"name":"罗瑞明","wechat":"","home":1,"away":1,"gkh":0,"gka":0,"train":0,"jsize_txt":"M","tsize_txt":"","letters":"","n1":"17","n2":"19，14，66，30","n3":"","race":"66","memo":"","back":"Jasper L.","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销一套球衣-冬季联赛","addr":"","seqs":["9"],"issues":["客场自费（请联系确认）"],"test":false,"jersey_total":2,"total":2},{"name":"唐开元","wechat":"","home":1,"away":1,"gkh":0,"gka":0,"train":0,"jsize_txt":"L","tsize_txt":"","letters":"","n1":"19","n2":"18","n3":"","race":"","memo":"19","back":"K. Tang","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"自费","addr":"","seqs":["10"],"issues":[],"test":false,"jersey_total":2,"total":2},{"name":"甘霖","wechat":"","home":1,"away":1,"gkh":0,"gka":0,"train":1,"jsize_txt":"XL","tsize_txt":"XL","letters":"GL","n1":"11","n2":"17","n3":"","race":"14","memo":"","back":"Gan.L","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销杯赛队员","addr":"","seqs":["11"],"issues":[],"test":false,"jersey_total":2,"total":3},{"name":"张媛","wechat":"","home":1,"away":0,"gkh":0,"gka":0,"train":1,"jsize_txt":"XS","tsize_txt":"S","letters":"YSZ","n1":"","n2":"","n3":"19","race":"","memo":"19","back":"Y. Zhang","pick_txt":"学校自取或杯赛时领取","comp_txt":"不参加，只参加野球和训练","fee_txt":"","reimb":"自费","addr":"","seqs":["12"],"issues":[],"test":false,"jersey_total":1,"total":2},{"name":"刘博宁","wechat":"","home":1,"away":1,"gkh":0,"gka":0,"train":1,"jsize_txt":"L","tsize_txt":"L","letters":"无","n1":"26","n2":"(空)","n3":"","race":"26","memo":"","back":"Liu B.N.","pick_txt":"国内地址邮寄","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销杯赛队员","addr":"国内地址邮寄","seqs":["13"],"issues":[],"test":false,"jersey_total":2,"total":3},{"name":"Evan Wang","wechat":"","home":1,"away":1,"gkh":0,"gka":0,"train":0,"jsize_txt":"2XL","tsize_txt":"","letters":"","n1":"17","n2":"7","n3":"","race":"17","memo":"","back":"Evan W.","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销杯赛队员","addr":"","seqs":["14"],"issues":[],"test":false,"jersey_total":2,"total":2},{"name":"张思远","wechat":"","home":1,"away":1,"gkh":0,"gka":0,"train":1,"jsize_txt":"XL","tsize_txt":"XL","letters":"不印字母","n1":"4","n2":"4","n3":"","race":"4","memo":"","back":"不印名字","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销杯赛队员","addr":"","seqs":["15"],"issues":[],"test":false,"jersey_total":2,"total":3},{"name":"唐启轩","wechat":"","home":1,"away":0,"gkh":0,"gka":0,"train":1,"jsize_txt":"L","tsize_txt":"L","letters":"Tang Qixuan","n1":"7","n2":"17","n3":"","race":"","memo":"","back":"Qixuan Tang","pick_txt":"学校自取或杯赛时领取","comp_txt":"不确定－队委之后会跟你确定","fee_txt":"申请球队报销","reimb":"待定","addr":"","seqs":["16"],"issues":["号码待定，请联系队委确认"],"test":false,"jersey_total":1,"total":2},{"name":"赵博扬","wechat":"","home":0,"away":1,"gkh":0,"gka":0,"train":1,"jsize_txt":"L","tsize_txt":"L","letters":"BZ","n1":"","n2":"","n3":"17","race":"","memo":"17","back":"BOYANG","pick_txt":"学校自取或杯赛时领取","comp_txt":"不参加，但想买球衣做纪念","fee_txt":"","reimb":"自费","addr":"","seqs":["17"],"issues":[],"test":false,"jersey_total":1,"total":2},{"name":"叶知秋","wechat":"","home":0,"away":0,"gkh":0,"gka":0,"train":1,"jsize_txt":"","tsize_txt":"XL","letters":"YZQ","n1":"","n2":"","n3":"无","race":"","memo":"","back":"","pick_txt":"国内地址邮寄","comp_txt":"不参加，但想买球衣做纪念","fee_txt":"","reimb":"训练服（自费）","addr":"国内地址邮寄","seqs":["18"],"issues":[],"test":false,"jersey_total":0,"total":1},{"name":"Defeng Jin","wechat":"","home":1,"away":1,"gkh":0,"gka":0,"train":1,"jsize_txt":"L","tsize_txt":"L","letters":"DF","n1":"","n2":"","n3":"19","race":"","memo":"19","back":"Jin","pick_txt":"学校自取或杯赛时领取","comp_txt":"不参加，只参加野球和训练","fee_txt":"","reimb":"自费","addr":"","seqs":["19"],"issues":[],"test":false,"jersey_total":2,"total":3},{"name":"Erfan","wechat":"","home":0,"away":0,"gkh":0,"gka":0,"train":1,"jsize_txt":"","tsize_txt":"L","letters":"E","n1":"","n2":"","n3":"","race":"","memo":"","back":"","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"","reimb":"训练服（自费）","addr":"","seqs":["20","32","36"],"issues":["已确认只订训练服（原球衣提交作废）"],"test":false,"jersey_total":0,"total":1},{"name":"张荣航","wechat":"","home":1,"away":1,"gkh":0,"gka":0,"train":1,"jsize_txt":"L","tsize_txt":"L","letters":"RZ","n1":"9","n2":"(空)","n3":"","race":"9","memo":"","back":"Hang","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销杯赛队员","addr":"","seqs":["21"],"issues":[],"test":false,"jersey_total":2,"total":3},{"name":"笪蔚","wechat":"","home":0,"away":0,"gkh":0,"gka":0,"train":1,"jsize_txt":"","tsize_txt":"XL","letters":"N/a","n1":"","n2":"","n3":"","race":"","memo":"","back":"","pick_txt":"学校自取或杯赛时领取","comp_txt":"不确定－队委之后会跟你确定","fee_txt":"","reimb":"训练服（自费）","addr":"","seqs":["22"],"issues":[],"test":false,"jersey_total":0,"total":1},{"name":"夏乔恩","wechat":"","home":1,"away":1,"gkh":0,"gka":0,"train":1,"jsize_txt":"2XL","tsize_txt":"2XL","letters":"QX","n1":"42","n2":"25, 19, 27","n3":"","race":"42","memo":"","back":"Q.Xia","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销杯赛队员","addr":"","seqs":["23"],"issues":[],"test":false,"jersey_total":2,"total":3},{"name":"李立唯 lyle","wechat":"","home":1,"away":1,"gkh":0,"gka":0,"train":1,"jsize_txt":"L","tsize_txt":"M","letters":"LL","n1":"8","n2":"16，22","n3":"","race":"16","memo":"","back":"lyle l.","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销杯赛队员","addr":"","seqs":["24"],"issues":[],"test":false,"jersey_total":2,"total":3},{"name":"Yanqing Jiang","wechat":"","home":1,"away":1,"gkh":0,"gka":0,"train":1,"jsize_txt":"L","tsize_txt":"L","letters":"TJ","n1":"25","n2":"6，23","n3":"","race":"","memo":"","back":"T J","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"待定","addr":"","seqs":["25"],"issues":["号码待定，请联系队委确认"],"test":false,"jersey_total":2,"total":3},{"name":"郑靖邦Cris","wechat":"","home":1,"away":1,"gkh":0,"gka":0,"train":1,"jsize_txt":"L","tsize_txt":"L","letters":"CRIS","n1":"7","n2":"9、17、20","n3":"","race":"20","memo":"","back":"Cris Zheng","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销杯赛队员","addr":"","seqs":["26"],"issues":[],"test":false,"jersey_total":2,"total":3},{"name":"Lucas 苏佳楷","wechat":"","home":1,"away":1,"gkh":0,"gka":0,"train":1,"jsize_txt":"L","tsize_txt":"L","letters":"Su","n1":"8","n2":"20","n3":"","race":"8","memo":"","back":"Lucas","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销杯赛队员","addr":"","seqs":["27"],"issues":[],"test":false,"jersey_total":2,"total":3},{"name":"Chaoyi Chu","wechat":"","home":1,"away":1,"gkh":0,"gka":0,"train":1,"jsize_txt":"L","tsize_txt":"L","letters":"C.C","n1":"23","n2":"21 27","n3":"","race":"","memo":"23","back":"Chaoyi.C","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"自费","reimb":"自费","addr":"","seqs":["28"],"issues":[],"test":false,"jersey_total":2,"total":3},{"name":"韩博桐","wechat":"","home":1,"away":1,"gkh":0,"gka":0,"train":1,"jsize_txt":"XL","tsize_txt":"XL","letters":"大写的C","n1":"8","n2":"6，17，18，19，24，26，27，28","n3":"","race":"24","memo":"","back":"HAN","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销杯赛队员","addr":"","seqs":["29"],"issues":["24号与队内另一人同号，但不在同一项赛事，已确认可行"],"test":false,"jersey_total":2,"total":3},{"name":"石天一","wechat":"","home":0,"away":0,"gkh":0,"gka":0,"train":1,"jsize_txt":"","tsize_txt":"XL","letters":"可以不印吗","n1":"","n2":"","n3":"","race":"","memo":"","back":"","pick_txt":"国内地址邮寄","comp_txt":"不参加，但想买球衣做纪念","fee_txt":"","reimb":"训练服（自费）","addr":"国内地址邮寄","seqs":["30"],"issues":[],"test":false,"jersey_total":0,"total":1},{"name":"余宫达","wechat":"","home":1,"away":0,"gkh":0,"gka":0,"train":1,"jsize_txt":"XL","tsize_txt":"XL","letters":"GY","n1":"4","n2":"77","n3":"","race":"","memo":"","back":"G.Y","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"自费","addr":"","seqs":["31"],"issues":["号码待定，请联系队委确认"],"test":false,"jersey_total":1,"total":2},{"name":"付泳杰","wechat":"","home":0,"away":0,"gkh":0,"gka":0,"train":1,"jsize_txt":"","tsize_txt":"M","letters":"YJ","n1":"","n2":"","n3":"","race":"","memo":"","back":"","pick_txt":"国内地址邮寄","comp_txt":"","fee_txt":"","reimb":"训练服（自费）","addr":"国内地址邮寄","seqs":["33"],"issues":[],"test":false,"jersey_total":0,"total":1},{"name":"Rui Zhang","wechat":"","home":1,"away":1,"gkh":0,"gka":0,"train":1,"jsize_txt":"L","tsize_txt":"L","letters":"ZR","n1":"29","n2":"(空)","n3":"","race":"29","memo":"","back":"Ray","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销杯赛队员","addr":"","seqs":["34"],"issues":[],"test":false,"jersey_total":2,"total":3},{"name":"黄路嘉","wechat":"","home":0,"away":0,"gkh":0,"gka":0,"train":1,"jsize_txt":"","tsize_txt":"S","letters":"无","n1":"","n2":"","n3":"","race":"","memo":"","back":"","pick_txt":"学校自取或杯赛时领取","comp_txt":"","fee_txt":"","reimb":"训练服（自费）","addr":"","seqs":["35"],"issues":[],"test":false,"jersey_total":0,"total":1},{"name":"黄喆","wechat":"","home":0,"away":1,"gkh":0,"gka":0,"train":1,"jsize_txt":"L","tsize_txt":"L","letters":"H.Z","n1":"","n2":"","n3":"10","race":"","memo":"10","back":"Zac","pick_txt":"国内地址邮寄","comp_txt":"不参加，但想买球衣做纪念","fee_txt":"","reimb":"自费","addr":"国内地址邮寄","seqs":["37"],"issues":[],"test":false,"jersey_total":1,"total":2},{"name":"胡翔","wechat":"","home":1,"away":1,"gkh":0,"gka":0,"train":1,"jsize_txt":"XL","tsize_txt":"XL","letters":"HU","n1":"2","n2":"(空)","n3":"","race":"2","memo":"","back":"Hu","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销杯赛队员","addr":"","seqs":["38","39"],"issues":[],"test":false,"jersey_total":2,"total":3},{"name":"周之于","wechat":"","home":1,"away":0,"gkh":0,"gka":0,"train":1,"jsize_txt":"2XL","tsize_txt":"2XL","letters":"ZZY","n1":"64","n2":"2 4 14","n3":"","race":"64","memo":"","back":"Nicholas. Zhou","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销杯赛队员","addr":"","seqs":["40","54"],"issues":[],"test":false,"jersey_total":1,"total":2},{"name":"kaiyi zheng","wechat":"","home":1,"away":1,"gkh":0,"gka":0,"train":0,"jsize_txt":"XL","tsize_txt":"","letters":"","n1":"55","n2":"19","n3":"","race":"55","memo":"","back":"Kai","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销杯赛队员","addr":"","seqs":["41"],"issues":[],"test":false,"jersey_total":2,"total":2},{"name":"董悟童 Wutong D.","wechat":"","home":1,"away":0,"gkh":0,"gka":0,"train":1,"jsize_txt":"XL","tsize_txt":"XL","letters":"WT","n1":"11","n2":"16，9，22","n3":"","race":"37","memo":"","back":"D. Wutong","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销一套球衣-冬季联赛","addr":"","seqs":["42"],"issues":[],"test":false,"jersey_total":1,"total":2},{"name":"刘陈靖宇","wechat":"","home":1,"away":1,"gkh":0,"gka":0,"train":1,"jsize_txt":"L","tsize_txt":"L","letters":"CL","n1":"19","n2":"17，18，23","n3":"","race":"19","memo":"","back":"JINGYU","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销杯赛队员","addr":"","seqs":["43"],"issues":[],"test":false,"jersey_total":2,"total":3},{"name":"陈孟阳","wechat":"","home":0,"away":0,"gkh":0,"gka":0,"train":1,"jsize_txt":"","tsize_txt":"XL","letters":"KC","n1":"","n2":"","n3":"","race":"","memo":"","back":"","pick_txt":"国内地址邮寄","comp_txt":"","fee_txt":"","reimb":"训练服（自费）","addr":"国内地址邮寄","seqs":["44"],"issues":[],"test":false,"jersey_total":0,"total":1},{"name":"Wilson Zhao","wechat":"","home":0,"away":0,"gkh":1,"gka":1,"train":1,"jsize_txt":"L","tsize_txt":"L","letters":"WZ","n1":"26","n2":"21/1","n3":"","race":"26","memo":"","back":"W. ZHAO","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销杯赛队员","addr":"","seqs":["45"],"issues":[],"test":false,"jersey_total":2,"total":3},{"name":"Gary","wechat":"","home":1,"away":0,"gkh":0,"gka":0,"train":0,"jsize_txt":"L","tsize_txt":"","letters":"","n1":"","n2":"","n3":"22","race":"","memo":"22","back":"Gary.T","pick_txt":"国内地址邮寄","comp_txt":"不参加，但想买球衣做纪念","fee_txt":"","reimb":"自费","addr":"国内地址邮寄","seqs":["46"],"issues":[],"test":false,"jersey_total":1,"total":1},{"name":"蒋思源","wechat":"","home":1,"away":1,"gkh":0,"gka":0,"train":1,"jsize_txt":"M","tsize_txt":"M","letters":"siyuan","n1":"","n2":"","n3":"3","race":"","memo":"3","back":"SIYUAN","pick_txt":"国内地址邮寄","comp_txt":"不参加，但想买球衣做纪念","fee_txt":"","reimb":"自费","addr":"国内地址邮寄","seqs":["47"],"issues":[],"test":false,"jersey_total":2,"total":3},{"name":"MARCO","wechat":"","home":1,"away":1,"gkh":0,"gka":0,"train":1,"jsize_txt":"L","tsize_txt":"L","letters":"JZ","n1":"15","n2":"(空)","n3":"","race":"15","memo":"","back":"MARCO","pick_txt":"学校自取或杯赛时领取","comp_txt":"不确定－队委之后会跟你确定","fee_txt":"申请球队报销","reimb":"球队报销杯赛队员","addr":"","seqs":["48","49"],"issues":[],"test":false,"jersey_total":2,"total":3},{"name":"夏博","wechat":"","home":1,"away":0,"gkh":0,"gka":0,"train":0,"jsize_txt":"XL","tsize_txt":"","letters":"","n1":"33","n2":"22, 29","n3":"","race":"33","memo":"","back":"xiabo","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销一套球衣-冬季联赛","addr":"","seqs":["50"],"issues":[],"test":false,"jersey_total":1,"total":1},{"name":"董赫男","wechat":"","home":0,"away":0,"gkh":0,"gka":0,"train":1,"jsize_txt":"","tsize_txt":"XL","letters":"DHN","n1":"","n2":"","n3":"","race":"","memo":"","back":"","pick_txt":"学校自取或杯赛时领取","comp_txt":"","fee_txt":"","reimb":"训练服（自费）","addr":"","seqs":["51"],"issues":[],"test":false,"jersey_total":0,"total":1},{"name":"吴浩然","wechat":"","home":1,"away":0,"gkh":0,"gka":0,"train":0,"jsize_txt":"2XL","tsize_txt":"","letters":"","n1":"9","n2":"都可以","n3":"","race":"29","memo":"","back":"Wu","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销一套球衣-冬季联赛","addr":"","seqs":["52"],"issues":[],"test":false,"jersey_total":1,"total":1},{"name":"Haomin Zhou","wechat":"","home":1,"away":0,"gkh":0,"gka":0,"train":0,"jsize_txt":"3XL","tsize_txt":"","letters":"","n1":"6","n2":"20","n3":"","race":"20","memo":"","back":"Haomin Zhou","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销一套球衣-冬季联赛","addr":"","seqs":["53"],"issues":[],"test":false,"jersey_total":1,"total":1},{"name":"沈翌阳Leo","wechat":"","home":1,"away":0,"gkh":0,"gka":0,"train":0,"jsize_txt":"XL","tsize_txt":"","letters":"","n1":"21","n2":"22","n3":"","race":"21","memo":"","back":"SHEN","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"","addr":"","seqs":["55"],"issues":[],"test":false,"jersey_total":1,"total":1},{"name":"李涵","wechat":"","home":1,"away":0,"gkh":0,"gka":0,"train":1,"jsize_txt":"XL","tsize_txt":"XL","letters":"HL","n1":"11","n2":"22/24","n3":"","race":"24","memo":"","back":"Han","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销一套球衣-冬季联赛","addr":"","seqs":["56"],"issues":["24号与队内另一人同号，但不在同一项赛事，已确认可行"],"test":false,"jersey_total":1,"total":2},{"name":"Weibin","wechat":"","home":1,"away":0,"gkh":0,"gka":0,"train":0,"jsize_txt":"L","tsize_txt":"","letters":"","n1":"16","n2":"18 20 22 26 28 30 32 36 38 40","n3":"","race":"32","memo":"","back":"Weibin","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"","addr":"","seqs":["57"],"issues":[],"test":false,"jersey_total":1,"total":1},{"name":"John","wechat":"","home":0,"away":1,"gkh":0,"gka":0,"train":0,"jsize_txt":"L","tsize_txt":"","letters":"","n1":"7","n2":"(空)","n3":"","race":"","memo":"7","back":"John","pick_txt":"学校自取或杯赛时领取","comp_txt":"不确定－队委之后会跟你确定","fee_txt":"申请球队报销","reimb":"球队报销-赞助商","addr":"","seqs":["58"],"issues":[],"test":false,"jersey_total":1,"total":1},{"name":"李明远","wechat":"","home":0,"away":0,"gkh":0,"gka":0,"train":1,"jsize_txt":"","tsize_txt":"XL","letters":"ML","n1":"","n2":"","n3":"","race":"","memo":"","back":"","pick_txt":"学校自取或杯赛时领取","comp_txt":"","fee_txt":"","reimb":"训练服（自费）","addr":"","seqs":["59"],"issues":[],"test":false,"jersey_total":0,"total":1},{"name":"褚天乐","wechat":"","home":1,"away":0,"gkh":0,"gka":0,"train":0,"jsize_txt":"M","tsize_txt":"","letters":"","n1":"8","n2":"6","n3":"","race":"8","memo":"","back":"Musk","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销一套球衣-冬季联赛","addr":"","seqs":["60"],"issues":[],"test":false,"jersey_total":1,"total":1},{"name":"David Jiang","wechat":"","home":1,"away":0,"gkh":0,"gka":0,"train":0,"jsize_txt":"L","tsize_txt":"","letters":"","n1":"4","n2":"6, 5, 15, 16","n3":"","race":"","memo":"5","back":"D. JIANG","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销一套球衣-冬季联赛","addr":"","seqs":["61"],"issues":[],"test":false,"jersey_total":1,"total":1},{"name":"刘谦益","wechat":"","home":1,"away":0,"gkh":0,"gka":0,"train":0,"jsize_txt":"2XL","tsize_txt":"","letters":"","n1":"22","n2":"23，30，87，8，72","n3":"","race":"","memo":"87","back":"J. LAU","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销一套球衣-冬季联赛","addr":"","seqs":["62","63"],"issues":["客场球衣 在 2 份提交中重复勾选（共2件），需确认实际数量","是否参加杯赛/联赛 两次填写不一致：2 / 1","球衣费用 两次填写不一致：2 / 1","备选号码 两次填写不一致：30 / 23，30，87，8，72"],"test":false,"jersey_total":1,"total":1},{"name":"张艺怀","wechat":"","home":1,"away":1,"gkh":0,"gka":0,"train":0,"jsize_txt":"L","tsize_txt":"","letters":"","n1":"11","n2":"(空)","n3":"","race":"11","memo":"","back":"ZHANG","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销杯赛队员","addr":"","seqs":["64"],"issues":[],"test":false,"jersey_total":2,"total":2},{"name":"盛蔚明","wechat":"","home":1,"away":0,"gkh":0,"gka":0,"train":0,"jsize_txt":"M","tsize_txt":"","letters":"","n1":"25","n2":"13","n3":"","race":"25","memo":"","back":"Wei","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销一套球衣-冬季联赛","addr":"","seqs":["65"],"issues":[],"test":false,"jersey_total":1,"total":1},{"name":"Tony Cao","wechat":"","home":1,"away":0,"gkh":0,"gka":0,"train":0,"jsize_txt":"3XL","tsize_txt":"","letters":"","n1":"15","n2":"6, 24, 12","n3":"","race":"15","memo":"","back":"Tony","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销一套球衣-冬季联赛","addr":"","seqs":["66"],"issues":[],"test":false,"jersey_total":1,"total":1},{"name":"金一诺","wechat":"","home":0,"away":1,"gkh":0,"gka":0,"train":0,"jsize_txt":"M","tsize_txt":"","letters":"","n1":"21","n2":"(空)","n3":"","race":"21","memo":"","back":"Jin","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销杯赛队员","addr":"","seqs":["67"],"issues":[],"test":false,"jersey_total":1,"total":1},{"name":"高梅森 mason gao","wechat":"","home":1,"away":1,"gkh":0,"gka":0,"train":1,"jsize_txt":"XL","tsize_txt":"XL","letters":"无","n1":"66","n2":"69 99","n3":"","race":"66","memo":"","back":"m","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销杯赛队员","addr":"","seqs":["68"],"issues":[],"test":false,"jersey_total":2,"total":3},{"name":"Dong Ding","wechat":"","home":1,"away":0,"gkh":0,"gka":0,"train":0,"jsize_txt":"L","tsize_txt":"","letters":"","n1":"22","n2":"8","n3":"","race":"8","memo":"","back":"Dong Ding","pick_txt":"学校自取或杯赛时领取","comp_txt":"是，参加杯赛/联赛（被球队征召）","fee_txt":"申请球队报销","reimb":"球队报销一套球衣-冬季联赛","addr":"","seqs":["69"],"issues":[],"test":false,"jersey_total":1,"total":1}];
+const people = DATA.filter(p => !p.test);
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+const q = document.getElementById('q');
+const hits = document.getElementById('hits');
+const result = document.getElementById('result');
+
+function search(term){
+  const t = term.trim().toLowerCase();
+  if(!t) return [];
+  return people.filter(p =>
+    p.name.toLowerCase().includes(t) ||
+    String(p.wechat).toLowerCase().includes(t) ||
+    String(p.back).toLowerCase().includes(t));
+}
+
+function render(p){
+  const items = [];
+  if(p.home) items.push(['主场球衣（蓝白）', p.home]);
+  if(p.away) items.push(['客场球衣（黑蓝）', p.away]);
+  if(p.gkh)  items.push(['门将主场', p.gkh]);
+  if(p.gka)  items.push(['门将客场', p.gka]);
+  if(p.train)items.push(['训练服', p.train]);
+
+  const rows = [];
+  if(p.jersey_total) rows.push(['球衣尺码', p.jsize_txt || '— 未填 —']);
+  if(p.train) rows.push(['训练服尺码', p.tsize_txt || '— 未填 —']);
+  if(p.train){
+    const L = String(p.letters || '').trim();
+    const skip = /^(无|没有|不印|不印字母|不需要|n\/?a|none|no)$/i.test(L);
+    const bad = L && !skip &&
+      (/[\u4e00-\u9fa5]/.test(L) || /\s/.test(L) || L.replace(/[^A-Za-z]/g,'').length > 4);
+    rows.push(['胸前字母', skip ? '不印' : (L || '—'), 'hot',
+      bad ? '胸前只能印少量字母（通常是名字首字母），印不下全名。请联系队委修改。' : '']);
+  }
+  if(p.jersey_total){
+    const winter = p.reimb === '球队报销一套球衣-冬季联赛';
+    rows.push(['比赛号（已分配）', (p.race || '待分配') + (winter ? '（冬季联赛）' : ''), 'hot']);
+    if(p.memo) rows.push(['纪念号（已分配）', p.memo]);
+    rows.push(['你填的首选号码', p.n1 || '—']);
+    if(p.n2) rows.push(['你填的备选号码', p.n2]);
+    if(p.n3) rows.push(['你想要的纪念号', p.n3]);
+    rows.push(['后印名字', p.back || '—', 'hot']);
+  }
+  rows.push(['参赛意向', p.comp_txt || '—', '', '实际以下方「费用/报销」核定结果为准。']);
+  rows.push(['费用/报销', p.reimb || (p.fee_txt ? p.fee_txt + '（待队委确认）' : '待队委确认'), 'money']);
+  if(p.reimb === '球队报销一套球衣-冬季联赛')
+    rows.push(['报销范围', '球队报销主场蓝白色 1 件（冬季联赛）' +
+      ((p.away + p.gkh + p.gka) > 0 ? '，客场自费（请联系确认）' : '，其余自费'), 'money']);
+  rows.push(['领取方式', p.pick_txt || '—']);
+  if(p.addr && !PUBLIC) rows.push(['快递地址', p.addr]);
+  if(p.wechat && !PUBLIC) rows.push(['微信号', p.wechat]);
+
+  result.innerHTML = `<div class="card">
+    <h2>${esc(p.name)}</h2>
+    <p class="meta">共 ${p.total} 件 · 问卷提交序号 ${p.seqs.join('、')}</p>
+    <div class="items">${
+      items.length ? items.map(([k,v]) => `<span class="chip">${esc(k)}<span>×${v}</span></span>`).join('')
+                   : '<span class="none">这份提交没有勾选任何球衣或训练服。</span>'}</div>
+    <dl>${rows.map(([k,v,cls,note]) =>
+      `<dt>${esc(k)}</dt><dd${cls ? ` class="${cls}"` : ''}>${esc(v)}${
+        note ? `<span class="note">${esc(note)}</span>` : ''}</dd>`).join('')}</dl>
+    ${p.issues.length ? `<div class="flag"><strong>需要你确认</strong><ul>${
+      p.issues.map(i => `<li>${esc(i)}</li>`).join('')}</ul></div>` : ''}
+  </div>`;
+}
+
+function update(){
+  const r = search(q.value);
+  if(!q.value.trim()){ hits.innerHTML=''; result.innerHTML=''; return; }
+  if(r.length === 1){ hits.innerHTML=''; render(r[0]); return; }
+  result.innerHTML = '';
+  hits.innerHTML = r.length
+    ? r.slice(0,12).map((p,i) => `<li><button data-i="${people.indexOf(p)}">${esc(p.name)}</button></li>`).join('')
+    : '<li class="none">没找到这个名字，可能是没提交，或者填写的姓名不一样。</li>';
+}
+q.addEventListener('input', update);
+hits.addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b) return;
+  const p = people[+b.dataset.i];
+  q.value = p.name; hits.innerHTML=''; render(p);
+});
+
+const sum = k => people.reduce((a,p) => a + (p[k]||0), 0);
+const cnt = k => people.filter(p => p[k]).length;
+const sizeRows = (key, sizes, filter) => sizes.map(s => {
+  const g = people.filter(p => filter(p) && p[key] === s);
+  return [s, g.length];
+}).filter(r => r[1]);
+
+const jSizes = sizeRows('jsize_txt', ['XS','S','M','L','XL','2XL','3XL','4XL'], p => p.jersey_total>0);
+const tSizes = sizeRows('tsize_txt', ['S','M','L','XL','2XL','3XL','4XL'], p => p.train>0);
+
+document.getElementById('totals').innerHTML = `
+  <tr><th>项目</th><th class="n">件数</th><th class="n">人数</th></tr>
+  <tr><td>主场球衣（蓝白）</td><td class="n">${sum('home')}</td><td class="n">${cnt('home')}</td></tr>
+  <tr><td>客场球衣（黑蓝）</td><td class="n">${sum('away')}</td><td class="n">${cnt('away')}</td></tr>
+  <tr><td>门将主场</td><td class="n">${sum('gkh')}</td><td class="n">${cnt('gkh')}</td></tr>
+  <tr><td>门将客场</td><td class="n">${sum('gka')}</td><td class="n">${cnt('gka')}</td></tr>
+  <tr><td><strong>球衣合计</strong></td><td class="n"><strong>${sum('jersey_total')}</strong></td><td class="n"><strong>${cnt('jersey_total')}</strong></td></tr>
+  <tr><td>训练服</td><td class="n">${sum('train')}</td><td class="n">${cnt('train')}</td></tr>
+  <tr><td>球衣尺码分布</td><td class="n" colspan="2">${jSizes.map(r => r[0]+' ×'+r[1]+'人').join(' · ')}</td></tr>
+  <tr><td>训练服尺码分布</td><td class="n" colspan="2">${tSizes.map(r => r[0]+' ×'+r[1]+'人').join(' · ')}</td></tr>`;
+document.getElementById('np').textContent = people.length;
+</script>
+</head>
+</html>
