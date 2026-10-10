@@ -92,7 +92,7 @@ footer p{margin:0 0 6px}
   </div>
 
   <footer>
-    <p>数据来源：问卷星征订表导出（67 份提交）+ 队委补录，共 <span id="np"></span> 人。</p>
+    <p>数据来源：问卷星征订表导出（67 份提交），共 <span id="np"></span> 人。</p>
     <p>尺码、费用、领取方式等选项已按问卷原始选项还原。</p>
     <p>训练服自费约 ¥140/件，不印号码，胸前可印名字首字母。</p>
   </footer>
@@ -156,7 +156,7 @@ function render(p){
 
   result.innerHTML = `<div class="card">
     <h2>${esc(p.name)}</h2>
-    <p class="meta">共 ${p.total} 件${p.seqs.length ? ' · 问卷提交序号 ' + p.seqs.join('、') : ' · 队委补录'}</p>
+    <p class="meta">共 ${p.total} 件${p.seqs.length ? ' · 问卷提交序号 ' + p.seqs.join('、') : ''}</p>
     <div class="items">${
       items.length ? items.map(([k,v]) => `<span class="chip">${esc(k)}<span>×${v}</span></span>`).join('')
                    : '<span class="none">这份提交没有勾选任何球衣或训练服。</span>'}</div>
