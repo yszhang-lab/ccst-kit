@@ -13,7 +13,7 @@
   --cu:#b9d9eb; --cu-deep:#6aa9c9;
   --bg:#f1f7fb; --surface:#ffffff; --fg:#15222e; --muted:#5f7183;
   --line:#d8e5ee; --accent:#0d5c87; --accent-soft:#dcedf8;
-  --warn:#8a5a00; --warn-bg:#fdf3dc; --ok:#1f6b45; --hot:#c0352b; --money:#1f6b45;
+  --warn:#8a5a00; --warn-bg:#fdf3dc; --ok:#1f6b45; --hot:#c0352b; --money:#0d5c87;
   --font-d:"Oswald","Arial Narrow",Impact,sans-serif;
   --font-b:"Noto Sans SC","PingFang SC","Microsoft YaHei",Arial,sans-serif;
 }
@@ -21,12 +21,12 @@
   --cu:#9fcde4; --cu-deep:#4e8aa8;
   --bg:#0e161d; --surface:#161f29; --fg:#e7eef3; --muted:#93a5b4;
   --line:#25333f; --accent:#8ecbe8; --accent-soft:#143044;
-  --warn:#e8bf6a; --warn-bg:#2e2718; --ok:#6cc79a; --hot:#ff8d80; --money:#6cc79a; color-scheme:dark;}}
+  --warn:#e8bf6a; --warn-bg:#2e2718; --ok:#6cc79a; --hot:#ff8d80; --money:#8ecbe8; color-scheme:dark;}}
 :root[data-theme="dark"]{
   --cu:#9fcde4; --cu-deep:#4e8aa8;
   --bg:#0e161d; --surface:#161f29; --fg:#e7eef3; --muted:#93a5b4;
   --line:#25333f; --accent:#8ecbe8; --accent-soft:#143044;
-  --warn:#e8bf6a; --warn-bg:#2e2718; --ok:#6cc79a; --hot:#ff8d80; --money:#6cc79a; color-scheme:dark;}
+  --warn:#e8bf6a; --warn-bg:#2e2718; --ok:#6cc79a; --hot:#ff8d80; --money:#8ecbe8; color-scheme:dark;}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--fg);font-family:var(--font-b);line-height:1.6;
   padding-inline:16px;padding-block:28px 48px}
@@ -56,8 +56,7 @@ input[type=search]:focus{outline:2px solid var(--accent);outline-offset:1px;bord
 .meta .calc{color:var(--muted);font-size:12.5px}
 .items{display:flex;flex-wrap:wrap;gap:8px}
 .chip{display:inline-flex;align-items:baseline;gap:6px;border-radius:8px;padding:7px 12px;
-  background:var(--accent-soft);color:var(--accent);font-size:14px;font-weight:600;
-  border:1px solid var(--cu)}
+  background:var(--accent-soft);color:var(--accent);font-size:14px;font-weight:600}
 .chip span{font-variant-numeric:tabular-nums}
 .chip.pay{background:var(--warn-bg);color:var(--warn)}
 .chip em{font-style:normal;font-size:12px;font-weight:600;opacity:.9;margin-left:3px}
@@ -178,8 +177,8 @@ function render(p){
   if(p.jersey_total) rows.push(['球衣尺码', p.jsize_txt || '— 未填 —']);
   if (typeof p.owe !== 'number') {
     const s = selfPaid(p);
-    if (s.jersey) rows.push(['球衣付款', `¥${s.jersey * JERSEY_PRICE} → 微信转 ${PAYEE_JERSEY}`, 'money']);
-    if (s.train)  rows.push(['训练服付款', `¥${s.train * TRAIN_PRICE} → 微信转 ${PAYEE_TRAIN}`, 'money']);
+    if (s.jersey) rows.push(['球衣付款', `¥${s.jersey * JERSEY_PRICE} → 微信转 ${PAYEE_JERSEY}`, 'hot']);
+    if (s.train)  rows.push(['训练服付款', `¥${s.train * TRAIN_PRICE} → 微信转 ${PAYEE_TRAIN}`, 'hot']);
   }
   if(p.train) rows.push(['训练服尺码', p.tsize_txt || '— 未填 —']);
   if(p.train){
