@@ -98,7 +98,7 @@ footer p{margin:0 0 6px}
   <footer>
     <p>数据来源：问卷星征订表导出（80 份提交），共 <span id="np"></span> 人。</p>
     <p>尺码、费用、领取方式等选项已按问卷原始选项还原。</p>
-    <p>球衣、训练服均按约 ¥140/件 估算；训练服不印号码，胸前可印名字首字母。金额以队委最终核算为准。</p>
+    <p>球衣按 ¥135/件、训练服按 ¥125/件 估算；训练服不印号码，胸前可印名字首字母。金额以队委最终核算为准。</p>
   </footer>
 </div>
 
@@ -121,13 +121,13 @@ function search(term){
     String(p.back).toLowerCase().includes(t));
 }
 
-const PRICE = 140;
+const JERSEY_PRICE = 135, TRAIN_PRICE = 125;
 function owed(p){
   if (typeof p.owe === 'number') return p.owe;
   const r = p.reimb;
   const covered = (r === '球队报销杯赛队员' || r === '球队报销-赞助商') ? p.jersey_total
                 : (r === '球队报销一套球衣-冬季联赛' ? Math.min(1, p.jersey_total) : 0);
-  return (p.jersey_total - covered + p.train) * PRICE;
+  return (p.jersey_total - covered) * JERSEY_PRICE + p.train * TRAIN_PRICE;
 }
 
 function render(p){
