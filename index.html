@@ -108,7 +108,7 @@ footer p{margin:0 0 6px}
     <p>数据来源：问卷星征订表导出（80 份提交），共 <span id="np"></span> 人。</p>
     <p>尺码、费用、领取方式等选项已按问卷原始选项还原。</p>
     <p>球衣按 ¥135/件、训练服按 ¥125/件 估算；训练服不印号码，胸前可印名字首字母。金额以队委最终核算为准。</p>
-    <p>自费部分请转账：<strong>球衣转张媛</strong>（微信号 yuanz1010），<strong>训练服转李牧原</strong>（KOPB，微信号 LImY121120）。<strong>请于 10 月 15 日（周四）晚前完成</strong>，转账请备注本人姓名。</p>
+    <p>自费部分请转账：<strong>球衣转张媛</strong>（微信号 yuanz1010），<strong>训练服转李牧原</strong>（KOPB，微信号 LImY121120）。<strong>请于 10 月 15 日（周四）晚前支付</strong>，转账请备注本人姓名。</p>
   </footer>
 </div>
 
@@ -134,7 +134,7 @@ function search(term){
 const JERSEY_PRICE = 135, TRAIN_PRICE = 125;
 const PAYEE_JERSEY = '张媛（微信号 yuanz1010）';
 const PAYEE_TRAIN  = '李牧原（KOPB，微信号 LImY121120）';
-const DEADLINE = '请于 10 月 15 日（周四）晚前完成转账，备注本人姓名。';
+const DEADLINE = '请于 10 月 15 日（周四）晚前支付。';
 // 自费件数：球衣按报销方式扣减，训练服一律自费（owe 字段可整体覆盖）
 function selfPaid(p){
   const r = p.reimb;
