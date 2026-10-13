@@ -68,6 +68,7 @@ dd{margin:0;min-width:0;overflow-wrap:anywhere}
 dd.hot{color:var(--hot);font-weight:600}
 dd.money{color:var(--money);font-weight:600}
 dd.ok{color:var(--ok);font-weight:600}
+dd.info{color:var(--accent);font-weight:600}
 .note{display:block;margin-top:2px;color:var(--warn);font-size:12.5px;font-weight:400;line-height:1.45}
 .flag{background:var(--warn-bg);color:var(--warn);border-radius:10px;padding:12px 14px;font-size:14px}
 .flag strong{display:block;margin-bottom:4px}
@@ -191,17 +192,17 @@ function render(p){
     const skip = /^(无|没有|不印|不印字母|不需要|n\/?a|none|no)$/i.test(L);
     const bad = L && !skip && !p.letters_ok &&
       (/[\u4e00-\u9fa5]/.test(L) || /\s/.test(L) || L.replace(/[^A-Za-z]/g,'').length > 4);
-    rows.push(['胸前字母', skip ? '不印' : (L || '—'), 'hot',
+    rows.push(['胸前字母', skip ? '不印' : (L || '—'), 'info',
       bad ? '胸前只能印少量字母（通常是名字首字母），印不下全名。请联系队委修改。' : '']);
   }
   if(p.jersey_total){
     const winter = p.reimb === '球队报销一套球衣-冬季联赛';
     const num = p.race || p.memo;
-    rows.push(['已分配号码', num ? num + (winter ? '（冬季联赛）' : (p.reimb === '自费' ? '（纪念号）' : '')) : '待分配', 'hot']);
+    rows.push(['已分配号码', num ? num + (winter ? '（冬季联赛）' : (p.reimb === '自费' ? '（纪念号）' : '')) : '待分配', 'info']);
     rows.push(['你填的首选号码', p.n1 || '—']);
     if(p.n2) rows.push(['你填的备选号码', p.n2]);
     if(p.n3) rows.push(['你想要的纪念号', p.n3]);
-    rows.push(['后印名字', p.back || '—', 'hot']);
+    rows.push(['后印名字', p.back || '—', 'info']);
   }
   rows.push(['参赛意向', p.comp_txt || '—', '', '实际以下方「费用/报销」核定结果为准。']);
   { const covered = /^球队报销/.test(p.reimb || '');
