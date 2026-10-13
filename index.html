@@ -46,6 +46,7 @@ input[type=search]:focus{outline:2px solid var(--accent);outline-offset:1px;bord
 .card h2{font-family:var(--font-d);font-size:24px;margin:0;font-weight:600}
 .meta{color:var(--muted);font-size:13px;margin:-10px 0 0}
 .meta .owe{color:var(--money);font-weight:600;font-size:14px}
+.meta .calc{color:var(--muted);font-size:12.5px}
 .items{display:flex;flex-wrap:wrap;gap:8px}
 .chip{display:inline-flex;align-items:baseline;gap:6px;border-radius:8px;padding:7px 12px;
   background:var(--accent-soft);color:var(--accent);font-size:14px;font-weight:600}
@@ -122,12 +123,24 @@ function search(term){
 }
 
 const JERSEY_PRICE = 135, TRAIN_PRICE = 125;
-function owed(p){
-  if (typeof p.owe === 'number') return p.owe;
+// 自费件数：球衣按报销方式扣减，训练服一律自费（owe 字段可整体覆盖）
+function selfPaid(p){
   const r = p.reimb;
   const covered = (r === '球队报销杯赛队员' || r === '球队报销-赞助商') ? p.jersey_total
                 : (r === '球队报销一套球衣-冬季联赛' ? Math.min(1, p.jersey_total) : 0);
-  return (p.jersey_total - covered) * JERSEY_PRICE + p.train * TRAIN_PRICE;
+  return { jersey: p.jersey_total - covered, train: p.train };
+}
+function owed(p){
+  if (typeof p.owe === 'number') return p.owe;
+  const s = selfPaid(p);
+  return s.jersey * JERSEY_PRICE + s.train * TRAIN_PRICE;
+}
+function calcText(p){
+  if (typeof p.owe === 'number') return '';
+  const s = selfPaid(p), parts = [];
+  if (s.jersey) parts.push(`球衣 ${s.jersey}×¥${JERSEY_PRICE}`);
+  if (s.train)  parts.push(`训练服 ${s.train}×¥${TRAIN_PRICE}`);
+  return parts.length > 1 ? parts.join(' + ') : (parts[0] || '');
 }
 
 function render(p){
@@ -180,7 +193,9 @@ function render(p){
 
   result.innerHTML = `<div class="card">
     <h2>${esc(p.name)}</h2>
-    <p class="meta">共 ${p.total} 件${p.seqs.length ? ' · 问卷提交序号 ' + p.seqs.join('、') : ''} · 需支付金额：<strong class="owe">¥${owed(p)}</strong>${p.owe_note ? '（' + esc(p.owe_note) + '）' : (owed(p) ? '' : '（由球队报销）')}</p>
+    <p class="meta">共 ${p.total} 件${p.seqs.length ? ' · 问卷提交序号 ' + p.seqs.join('、') : ''} · 需支付金额：<strong class="owe">¥${owed(p)}</strong>${
+      p.owe_note ? '（' + esc(p.owe_note) + '）'
+      : (owed(p) ? `<span class="calc">（${calcText(p)}）</span>` : '（由球队报销）')}</p>
     <div class="items">${
       items.length ? items.map(([k,v,ok]) => `<span class="chip${ok ? '' : ' pay'}">${esc(k)}<span>×${v}</span>${ok ? '' : '<em>自费</em>'}</span>`).join('')
                    : '<span class="none">这份提交没有勾选任何球衣或训练服。</span>'}</div>${
