@@ -100,6 +100,7 @@ footer p{margin:0 0 6px}
     <p>数据来源：问卷星征订表导出（80 份提交），共 <span id="np"></span> 人。</p>
     <p>尺码、费用、领取方式等选项已按问卷原始选项还原。</p>
     <p>球衣按 ¥135/件、训练服按 ¥125/件 估算；训练服不印号码，胸前可印名字首字母。金额以队委最终核算为准。</p>
+    <p>自费部分请微信转账：<strong>球衣转张媛</strong>，<strong>训练服转李牧原</strong>（KOPB，微信号 LImY121120）。转账请备注本人姓名。</p>
   </footer>
 </div>
 
@@ -123,6 +124,8 @@ function search(term){
 }
 
 const JERSEY_PRICE = 135, TRAIN_PRICE = 125;
+const PAYEE_JERSEY = '张媛';
+const PAYEE_TRAIN  = '李牧原（KOPB，微信号 LImY121120）';
 // 自费件数：球衣按报销方式扣减，训练服一律自费（owe 字段可整体覆盖）
 function selfPaid(p){
   const r = p.reimb;
@@ -188,6 +191,11 @@ function render(p){
   if(p.reimb === '球队报销一套球衣-冬季联赛')
     rows.push(['报销范围', '球队报销主场蓝白色 1 件（冬季联赛）' +
       ((p.away + p.gkh + p.gka) > 0 ? '，客场自费（请联系确认）' : '，其余自费'), 'money']);
+  if (typeof p.owe !== 'number') {
+    const s = selfPaid(p);
+    if (s.jersey) rows.push(['球衣付款', `¥${s.jersey * JERSEY_PRICE} → 微信转 ${PAYEE_JERSEY}`, 'money']);
+    if (s.train)  rows.push(['训练服付款', `¥${s.train * TRAIN_PRICE} → 微信转 ${PAYEE_TRAIN}`, 'money']);
+  }
   rows.push(['领取方式', p.pick_txt || '—']);
   if(p.addr && !PUBLIC) rows.push(['快递地址', p.addr]);
 
